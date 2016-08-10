@@ -1,14 +1,14 @@
 # Basic syntax and conventions
 
 ## Assignment
-The most common way of assigning a value to a variable is ```:```. e.g.
+The most common way of assigning a value to a variable is `:`. e.g.
 ```
 a:1             /assigns 1 to a
 fn:{x+y}        /assigns the function to fn
 lst:enlist "a"  /creates a list with a single value "a"
 ```
 
-The other way to assign a value is to use the ```set``` keyword.  This can be useful for assigning values to dynamic names, e.g.:
+The other way to assign a value is to use the `set` keyword.  This can be useful for assigning values to dynamic names, e.g.:
 ```
 k:`a
 k set 1
@@ -29,19 +29,23 @@ The motivation is to reduce the number of parenthesis that needs to be used as m
 /counts the columns of mat and assigns the count to n
 /then checks if it's less than 10
 10 > n:count mat:flip (1 2 3 4;5 6 7 8;9 10 11 12)
+
+/randomly selects 10 values, assigns it to x
+/square x, assign it to y, then add 10 to y
+10+y:x*x:10?10
 ```
 
 
 ## Comparisons
-kdb has 7 general comparison functions, ```=, <>, <, >, <=, >=, ~```.  First 6 are fairly obvious (equals, not equals, less than, greater than, less than or equal to, greater than or equal to respectively).  The last comparison ```~``` requires a little more explanation.
+kdb has 7 general comparison functions, `=, <>, <, >, <=, >=, ~`.  First 6 are fairly obvious (equals, not equals, less than, greater than, less than or equal to, greater than or equal to respectively).  The last comparison `~` requires a little more explanation.
 
-The match operator ```~``` compares if two values are identical, with identical defined as:
+The match operator `~` compares if two values are identical, with identical defined as:
 - same data type
 - same value within tolerance (when data type is float)
 - same enumeration (when data type is symbol)
 - same order (if it's a list)
 
-In addition, it will also return a single boolean.  The operator is very useful when multiple data types can return from a function (which can generate an error if using ```=```).  e.g.
+In addition, it will also return a single boolean.  The operator is very useful when multiple data types can return from a function (which can generate an error if using `=`).  e.g.
 ```
 1~1                         /returns 1b (true)
 1~1.                        / return 0b (false)
@@ -56,7 +60,7 @@ The other comparison functions will compare either an atom with a list or equal-
 ```
 
 ## Binary operators
-kdb also generalizes and/or/xor (```&,|,<>```) - in fact they are treated as a special case of ```min/max/<>``` respectively for binary values.  As with the above, these comparisons work on atom vs list or equal-lengthed lists, e.g.:
+kdb also generalizes and/or/xor (`&,|,<>`) - in fact they are treated as a special case of `min/max/<>` respectively for binary values.  As with the above, these comparisons work on atom vs list or equal-lengthed lists, e.g.:
 ```
 111b & 001b     /returns 001b
 111b | 001b     /returns 111b
