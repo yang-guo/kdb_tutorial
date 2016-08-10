@@ -8,7 +8,12 @@ fn:{x+y}        /assigns the function to fn
 lst:enlist "a"  /creates a list with a single value "a"
 ```
 
-TODO: more exotic methods of assignment
+The other way to assign a value is to use the ```set``` keyword.  This can be useful for assigning values to dynamic names, e.g.:
+```
+k:`a
+k set 1
+a /displays 1
+```
 
 
 ## Operator precedence
@@ -73,7 +78,14 @@ s:`hello /symbol
 s:`$"hello world" /symbol
 ```
 
-TODO: add some notes about enumeration
+A symbol is enumerated when it gets cast with a symbol list.  This will convert a symbol list to integers underneath (very similar to the concept of factors in R)
+```
+e:`a`b`c
+val:`a`b`c`b`a`b`c`c`c`c`c`c`c
+enum:`e$val
+"i"$enum   /returns 1 2 1 0 1 2 2 2 2 2 2 2i
+"i"$val    /errors 'type
+```
 
 
 ## Leading whitespace
