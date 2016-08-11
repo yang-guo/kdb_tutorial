@@ -63,7 +63,7 @@ sum {x value y}/: ([]a:til 10;b:reverse til 10)     /sums each row of the left t
 ```
 
 `/`
-: over works on monadic, dyadic and multivalent functions.  
+: over works on monadic, dyadic and multivalent functions.  In generate it is used to either to reduce using a function, or to use a function recursively.  Only the final return value from the final call is returned.
 
 On a dyadic/multivalent function over will take the first two values of the collection, then take the result of that and the next value (this is often called reduce in other languages).  Optionally you can also set an initial starting value:
 ```
@@ -73,7 +73,22 @@ On a dyadic/multivalent function over will take the first two values of the coll
 ```
 
 On a monadic function over turns the function to a recursive call.  There are three ways to use it:
-- if the monad is called with over and nothing else, 
+- if the monad is called with over and nothing else, the function will recurse until the returned value is the same as the input (within tolerance), e.g.:
+```
+{x - (x*x-1)%2*x}/[10]        /find the root of x^2-1 using newton's method
+```
+- if an integer is the first argument, the function will recurse `n` times:
+```
+{x - (x*x-1)%2*x}/[2;10]      /same as above, but only allow two iterations
+```
+- if a monad where the return value is a boolean is the first argument, the function will recurse until the monad returns 0b:
+```
+{x - (x*x-1)%2*x}/[{x>2};10]  /same as above, but stop when x is less or equal to 2
+```
 
 `\`
-: scan
+: scan has the exact same functionalities as over, however all intermediate return values are also returned.
+```
+{x - (x*x-1)%2*x}\[{x>2};10]  /same as above, but will return 10 5.5 3.25 2.125 1.5625
++/[1 2 3]                     /same as above, but will return 1 3 6
+```
