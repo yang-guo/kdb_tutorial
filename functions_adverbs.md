@@ -27,7 +27,7 @@ fn2[1] each 1 2 3       /we continue to use projection to create a monad so we c
 Adverbs are a integral part of what makes kdb so powerful.  
 
 `each`
-: takes a monad and applies a collection to the function.
+: each takes a monad and applies a collection to the function.
 ```
 fn:{x*x}
 fn each til 10                                  /takes each element of the list and squares it
@@ -35,21 +35,21 @@ fn each til 10                                  /takes each element of the list 
 ```
 
 `\:`
-: takes a dyad `fn[x;y]` and applies each element of `x` to `fn` and `y`. 
+: each left takes a dyad `fn[x;y]` and applies each element of `x` to `fn` and `y`. 
 ```
 (til 5),\:1                                         /joins each element in the left list with 1
 ([]a:til 10;b:reverse til 10) {y value x}\: sum     /sums each row of the left table
 ```
 
 `/:`
-: takes a dyad `fn[x;y]` and applies each element of `y` to `fn` and `x`.
+: each right takes a dyad `fn[x;y]` and applies each element of `y` to `fn` and `x`.
 ```
 1,/:til 5                                           /joins each element in the left list with 1
 sum {x value y}/: ([]a:til 10;b:reverse til 10)     /sums each row of the left table
 ```
 
 `'`
-: takes a dyad `fn[x;y]` and applies each element of `x` and `y` to `fn`.  This allows you to turn a dyad that works on atoms to work on lists very easily.  The adverb allows for both atom/collection or two collections of the same length
+: each both takes a dyad `fn[x;y]` and applies each element of `x` and `y` to `fn`.  This allows you to turn a dyad that works on atoms to work on lists very easily.  The adverb allows for both atom/collection or two collections of the same length
 ```
 1,'til 10                   /joins 1 to each element of the list
 (til 10),'til 10            /joins the lists element by element
@@ -57,13 +57,23 @@ sum {x value y}/: ([]a:til 10;b:reverse til 10)     /sums each row of the left t
 ```
 
 `':`
-: takes a dyad `fn[x;y]` and a collection and applies it along the collection.  If no initial value is specified, the first value is 0N by default
+: each prior takes a dyad `fn[x;y]` and a collection and applies it along the collection.  If no initial value is specified, the first value is 0N by default
 ```
 ({(x;y)}':) til 10 /returns ((0;0N);(1;0);(2;1);(3;2);...)
 ```
 
 `/`
-: over
+: over works on monadic, dyadic and multivalent functions.  
+
+On a dyadic/multivalent function over will take the first two values of the collection, then take the result of that and the next value (this is often called reduce in other languages).  Optionally you can also set an initial starting value:
+```
++/[1 2 3]                   /operations are res = (1 + 2) then (res + 3)
++/[10;1 2 3]                /operations are res1 = (10 + 1) then res2 = (res1 + 2), (res2 + 3)
+{x+y+z}/[10;1 2 3;4 5 6]    /operations are res1 = (10 + 1 + 4), res2 = (res1 + 2 + 5), res3 = (res2 + 3 + 6)
+```
+
+On a monadic function over turns the function to a recursive call.  There are three ways to use it:
+- if the monad is called with over and nothing else, 
 
 `\`
 : scan
