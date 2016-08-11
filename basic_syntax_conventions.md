@@ -108,3 +108,58 @@ fn:{[a;b]
  a-b}           /this will generate an error
 ```
 
+
+## Namespaces
+kdb has a concept of namespaces, this helps you organize your code into logical groupings (much like namespaces in other languages).  To access a namespace, you can use `\d .NAME`, where NAME is the namespace name.  The default namespace is `.`.
+```
+/enter the test namespace
+\d .test
+a:1         /create a variable in the test namespace
+fn:{x+x}    /create a function in the test namespace
+/go back to default namespace
+\d .
+fn 1        /error
+.test.fn 1  /returns 2
+```
+
+## Inspecting the environment
+Forward slash commands are useful to inspect the current process.  In addition to calling it using forward slash, you can optionally call the command using the `system` function to store any output into a variable:
+```
+/gets the current working directory
+\cd
+v:system "cd" /gets current working directory and stores it to v
+```
+
+Some more useful forward slash commands are:
+`\a`
+: lists all tables in the namespace.  If no namespace is provided default is `.`.
+
+`\v`
+: lists all variables in the namespace.  If no namespace is provided default is `.`.
+
+`\cd`
+: get/set current working directory.  `\cd` will get current working directory, while `\cd /path/to/new/dir` will set new working directory.
+
+`\d`
+: change namespace
+
+`\f`
+: list all functions in the namespace.  If no namespace is provided default is `.`.
+
+`\g`
+: toggle garbage collection from immediate mode `\g 1` to deferred mode `\g 0`.  Default is deferred mode.
+
+`\p`
+: set listening port.  This is useful when you want to access the kdb process from another process or via http.
+
+`\s`
+: returns the number of slaves (when kdb is running in distributed mode with `-s n`).
+
+`\S`
+: sets seed for random number generator by `\S n`.
+
+`\t`
+: this has a few uses: `\t n` starts the global timer, and will trigger `.z.ts{[x]...} after `n` milliseconds.  To turn off timer do `\t 0`.  `\t statement` is used to time statement execution time, and `\t:n statement` is used to time n iterations of the statement.
+
+`\v`
+: lists all variables in namespace.  If no namespace is provided default is `.`.
