@@ -61,7 +61,7 @@ Also as above, there is a functional version of update:
 kdb has multiple ways to insert new rows into a table, and they depend on use cases.  Some methods are robust while others are much more performant.
 
 `insert`
-: insert will only insert into global tables and is the most standard way of updating tables.  `insert` requires that the data inserted needs to match the table (e.g. if it's a list, the order and type of the data needs to be correct, or if it's a dictionary or table the column names must match exactly).
+: insert will only insert into global tables and is the most standard way of updating tables.  It calls the table by name, so a symbol is used to identify the table rather than a variable.   `insert` requires that the data inserted needs to match the table (e.g. if it's a list, the order and type of the data needs to be correct, or if it's a dictionary or table the column names must match exactly).
 
 In addition, on a keyed table, insert will not replace existing rows, but instead will throw an error.
 ```
@@ -73,14 +73,23 @@ In addition, on a keyed table, insert will not replace existing rows, but instea
 ```
 
 `upsert`
-: blah blah
-
-`,`
-: blah blah
+: upsert behaves similarly to insert but will replace identical keys on a keyed table rather than error out.  In addition, it doesn't need a global table, and can be used on temporary or in-memory tables.  If a symbol is used for the name, it will upsert in place rather than return a copy of the table.  
+```
+tbl upsert ([]side:enlist `buy;sym:enlist `twtr;val:enlist 2.;val2:enlist 1.)   /errors - columns don't match
+tbl upsert ([]side:enlist `buy;sym:enlist `twtr;val:enlist 2.)                  /returns the table with the last row inserted
+```
 
 
 ## Joins
 For most data operations, joins are as important as the ability to query.  kdb provides the standard join logic (inner join, outer join, left join) along with some more advanced logic for online updates (plus join) and time-based joins (asof join, window join).
+
+`,`
+: join is similar to insert, but only works on table to table.  In addition, columns must match in name, type and ordering
+```
+tbl,([]sym:enlist`twtr;side:enlist `buy;val:enlist 2.;val2:enlist 1.)     /errors - val2 doesn't exist in tbl1
+tbl,([]side:enlist `buy;sym:enlist `twtr;val:enlist 2.)                   /errors - column order is not the same
+tbl,([]sym:enlist `twtr;side:enlist `buy;val:enlist 2.)                   /returns the joined table
+```
 
 `uj`
 : union join does an outer join on two tables if the tables are unkeyed, otherwise if the tables are keyed it does a left join on keys present in the left table and appends all missing keys.  For uj to work both tables need to be either keyed or unkeyed.
