@@ -38,10 +38,45 @@ The above is great for adhoc querying, however it's not very conducive when used
 ?[tbl;();1b;(enlist`sym)!enlist`sym]                                                  /distinct syms
 ```
 
+
 ## Update
+Update behave very similarly to `select`, and all the above rules apply:
+```
+update new_col:1 from tbl               /adds a new column
+update val:0 from tbl where sym=`twtr   /error - we cannot update a float column with an integer
+update val:0. from tbl where sym=`twtr  /all rows with twtr now set to zero
+update mean:avg val by sym from tbl     /creates a new column called mean with the average values by sym
+```
+
+Also as above, there is a functional version of update:
+```
+![tbl;();0b;(enlist`new_col)!enlist 1]                              /adds a new column
+![tbl;enlist(=;`sym;enlist`twtr);0b;(enlist`val)!enlist 0]          /error - we cannot update a float column with an integer
+![tbl;enlist(=;`sym;enlist`twtr);0b;(enlist`val)!enlist 0.]         /all rows with twtr now set to zero
+![tbl;();(enlist`sym)!enlist`sym;(enlist`mean)!enlist (avg;`val)]   /creates a new column called mean with the average values by sym
+```
 
 
 ## Insert/upsert
+kdb has multiple ways to insert new rows into a table, and they depend on use cases.  Some methods are robust while others are much more performant.
+
+`insert`
+: insert will only insert into global tables and is the most standard way of updating tables.  `insert` requires that the data inserted needs to match the table (e.g. if it's a list, the order and type of the data needs to be correct, or if it's a dictionary or table the column names must match exactly).
+
+In addition, on a keyed table, insert will not replace existing rows, but instead will throw an error.
+```
+`tbl insert (`fb;`ask;0.4)                                                      /this will insert a row
+`tbl insert (`fb`twtr;`ask`bid;0.4 0.2)                                         /this will insert two more rows
+`tbl insert `val`sym`side!(0.8;`aapl;`ask)                                      /this will also insert a row
+`tbl insert ([]side:enlist `buy;sym:enlist `twtr;val:enlist 2.)                 /this will also insert a row
+`tbl insert ([]side:enlist `buy;sym:enlist `twtr;val:enlist 2.;val2:enlist 1.)  /the insert has a new column, and will error
+```
+
+`upsert`
+: blah blah
+
+`,`
+: blah blah
 
 
 ## Joins
