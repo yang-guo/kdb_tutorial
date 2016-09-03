@@ -1,0 +1,19 @@
+1. install virtual env
+2. source venv/bin/activate
+3. pip install -r requirements.txt
+4. start up tickerplant:            rlwrap q tick.q twitter /tmp/twitter_feed -p 7777
+5. start hdb                        rlwrap q -p 7779, system"cd /tmp/twitter_feed/twitter/"
+6. start rdb                        rlwrap q tick/r.q :7777 :7779 -p 7778
+7. start twitter feed process:      python twitter_feed.py ~/.twitter.secret programming 7777
+8. start notebook                   jupyter notebook
+
+
+# things to look 
+- stopping and restarting a ticker plant, rdb
+- anatomy of pipeline
+- how to parse json
+- integration with streaming via python
+- integration with notebook
+
+# some things we can look at in the ticker plant
+(.j.k tweets.payload[0])[`user]
